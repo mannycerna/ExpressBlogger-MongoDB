@@ -5,7 +5,7 @@ const { uuid: uuidv4 } = require("uuid");
 //instantiate mongodb 
 const { db } = require('../mongo');
 
-/* GET users listing. */
+/* GET all blog listing. */
 router.get('/', async function(req, res, next) {
   const blogs = await db()
   .collection('sample_blogs')
@@ -27,7 +27,7 @@ router.get('/', async function(req, res, next) {
 
     
 }); 
-
+/* GET single blog listing. */
 router.get('/single-blog/:titleToGet', async function(req, res, next){
   const blogs = await db()
   .collection('sample_blogs')
@@ -45,7 +45,7 @@ router.get('/single-blog/:titleToGet', async function(req, res, next){
 });
 
 
-
+/* POST update single blog listing. */
 router.post('/update-one/:titleToGet', async function(req, res, next){
   
   const titleToGet = req.params.titleToGet
@@ -73,7 +73,7 @@ router.post('/update-one/:titleToGet', async function(req, res, next){
 
 });
 
-
+/* GET single blog by the objectId */
 router.get('/get-one/:id', async function(req, res, next){
 
   
@@ -102,6 +102,7 @@ router.get('/get-one/:id', async function(req, res, next){
   }
 });
 
+/* POST creat a single blog. */
 router.post('/create-one-blog', async function(req, res, next){
 
 try {
@@ -136,6 +137,7 @@ try {
   }
 });
 
+/* POST create more than one blog entry. */
 router.post('/create-multiple', async function createMultiple(client, newBlogs){
   const blogs = await db()
   .collection('sample_blogs')
@@ -148,7 +150,7 @@ router.post('/create-multiple', async function createMultiple(client, newBlogs){
 
 
 
-
+/* GET multiple blog listings based by category */
 router.get('/get-multiple', async function(req, res, next){
   const blogs = await db()
   .collection('sample_blogs')
@@ -174,6 +176,8 @@ router.get('/get-multiple', async function(req, res, next){
 
 });
 
+
+/* DELETE single blog by title. */
 router.delete('/delete-one/:titleToGet', async function(req, res, next){
   const blogs = await db()
   .collection('sample_blogs')
@@ -189,6 +193,8 @@ router.delete('/delete-one/:titleToGet', async function(req, res, next){
   });
 });
 
+
+/* DELETE multiple blogs by author. */
 router.delete('/delete-multiple', async function(req, res, next){
   const blogs = await db()
   .collection('sample_blogs')
