@@ -8,7 +8,7 @@ const logger = require('morgan');
 //loads the contents of config.env
 require("dotenv").config({path: './config.env'});
 
-var { mongoConnect } = require('./mongo.js');
+var { mongoConnect } = require('./mongo.js'); 
 mongoConnect();
 
 //setup router for each set of routes 
@@ -55,7 +55,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
 }); 
 
 
