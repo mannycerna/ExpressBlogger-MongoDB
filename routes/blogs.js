@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { uuid: uuidv4 } = require("uuid");
 
 //instantiate mongodb 
 const { db } = require('../mongo');
@@ -55,7 +56,8 @@ router.post('/update-one/:titleToGet', async function(req, res, next){
   const updateDoc = { $set: {
     title: newTitle,
     author: newAuthor,
-    text: newText }
+    text: newText,
+    categories: [] }
   };
 
   const updatedBlog = await db()
@@ -71,28 +73,41 @@ router.post('/update-one/:titleToGet', async function(req, res, next){
 
 });
 
+
 router.get('/get-one/:id', async function(req, res, next){
+
+  
   const blogs = await db()
   .collection('sample_blogs')
-  
+
+  try{
   const idGet = req.params.id
   const query = {objectId: idGet};
   const singleBlogID = await blogs.findOne(query);
   // const singleBlog = await blogs.findOne({title:`${titleToGet}`})
+  if (singleBlogID === null || singleBlogID === undefined){
+    throw `ERROR: Unable to find blog: Title is ${singleBlogID}` ;
+  } 
 
   res.json({
     sucess:true,
-    blogs: singleBlogID
-  });
+    blog: singleBlogID
+    });
+  }
+  catch (e){
+    res.json ({
+      success: false,
+      message: `${e}`
+    })
+  }
 });
 
 router.post('/create-one-blog', async function(req, res, next){
 
-
-
 try {
   
   const doc = {
+
     createdAt: new Date(),
     title: req.body.title,
     author: req.body.author,
@@ -159,8 +174,30 @@ router.get('/get-multiple', async function(req, res, next){
 
 });
 
+router.delete('/delete-one/:titleToGet', async function(req, res, next){
+  const blogs = await db()
+  .collection('sample_blogs')
+  
+  const titleToGet = req.params.titleToGet
+  const query = {title: titleToGet};
+  const deletedBlog = await blogs.deleteOne(query);
+  console.log(`${query.deletedCount} document(s) was/were deleted.`)
+
+  res.json({
+    sucess:true,
+    message: "Deletion successful"
+  });
+});
+
 router.delete('/delete-multiple', async function(req, res, next){
   const blogs = await db()
   .collection('sample_blogs')
+  .deleteMany({ 'author': {$eq: "Ronnie James Dio"} })
+  console.log(`${blogs.deletedCount} documents) were deleted.`)
+
+  res.json({
+    sucess:true,
+    message: "Deletion successful"
+  });
 });
 module.exports = router;
